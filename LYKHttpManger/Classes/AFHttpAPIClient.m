@@ -94,6 +94,25 @@ static AFHttpAPIClient *_sharedClient = nil;
     [_sharedClient.requestSerializer didChangeValueForKey:@"timeoutInterval"];
 }
 
+/**
+ 配置自建证书的Https请求
+ @param cerFilePath 自建Https证书的路径
+ @param validatesDomainName 是否需要验证域名，默认为YES. 如果证书的域名与请求的域名不一致，需设置为NO; 即服务器使用其他可信任机构颁发
+ 的证书，也可以建立连接，这个非常危险, 建议打开.validatesDomainName=NO, 主要用于这种情况:客户端请求的是子域名, 而证书上的是另外
+ 一个域名。因为SSL证书上的域名是独立的,假如证书上注册的域名是www.google.com, 那么mail.google.com是无法验证通过的.
+ */
++ (void)setSecurityPolicyWithCerFilePath:(NSString *)cerFilePath ValidatesDomainName:(BOOL)validatesDomainName {
+    NSData *cerData = [NSData dataWithContentsOfFile:cerFilePath];
+    // 使用证书验证模式
+    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+    // 如果需要验证自建证书(无效证书)，需要设置为YES
+    securityPolicy.allowInvalidCertificates = YES;
+    // 是否需要验证域名，默认为YES;
+    securityPolicy.validatesDomainName = validatesDomainName;
+    securityPolicy.pinnedCertificates = [[NSSet alloc] initWithObjects:cerData, nil];
+    [_sharedClient setSecurityPolicy:securityPolicy];
+}
+
 #pragma mark ----------------Request Method---------------------
 /**
  基础的网络请求
