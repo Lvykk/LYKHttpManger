@@ -18,11 +18,13 @@ static AFHttpAPIClient *_sharedClient = nil;
         _sharedClient = [super manager];
         //设置contentTypes
         NSSet <NSString*>* set = [NSSet setWithObjects:@"application/json", @"text/html", @"text/json", @"text/plain", @"text/javascript", @"text/xml", @"image/*", nil];
-        [self setContentTypes:set];
+        _sharedClient.responseSerializer.acceptableContentTypes = set;
         //设置请求数据为JSON格式传输
-        [self transferParamsType:NetworkTransferJSON];
+        _sharedClient.requestSerializer = [AFJSONRequestSerializer serializer];
         // 设置超时时间
-        [self setTimeoutInterval:20.f];
+        [_sharedClient.requestSerializer willChangeValueForKey:@"timeoutInterval"];
+        _sharedClient.requestSerializer.timeoutInterval = 20.f;
+        [_sharedClient.requestSerializer didChangeValueForKey:@"timeoutInterval"];
         // 启动网络检测
         [_sharedClient.reachabilityManager startMonitoring];
     });
