@@ -73,25 +73,25 @@ static AFHttpAPIClient *_sharedClient = nil;
 
 /** 设置ContentTypes  */
 + (void)setContentTypes:(NSSet<NSString*>*)contentTypes {
-    _sharedClient.responseSerializer.acceptableContentTypes = contentTypes;
+    [AFHttpAPIClient sharedClient].responseSerializer.acceptableContentTypes = contentTypes;
 }
 
 /** 请求数据传输方式,默认是JSON传输*/
 + (void)transferParamsType:(NetworkTransferType)type {
     if (type == NetworkTransferJSON) {
         //JSON格式
-        _sharedClient.requestSerializer = [AFJSONRequestSerializer serializer];
+        [AFHttpAPIClient sharedClient].requestSerializer = [AFJSONRequestSerializer serializer];
     } else if (type == NetworkTransferBinary) {
         //二进制
-        _sharedClient.requestSerializer = [AFHTTPRequestSerializer serializer];
+        [AFHttpAPIClient sharedClient].requestSerializer = [AFHTTPRequestSerializer serializer];
     }
 }
 
 /** 设置请求超时的时间   */
 + (void)setTimeoutInterval:(float)time {
-    [_sharedClient.requestSerializer willChangeValueForKey:@"timeoutInterval"];
-    _sharedClient.requestSerializer.timeoutInterval = time;
-    [_sharedClient.requestSerializer didChangeValueForKey:@"timeoutInterval"];
+    [[AFHttpAPIClient sharedClient].requestSerializer willChangeValueForKey:@"timeoutInterval"];
+    [AFHttpAPIClient sharedClient].requestSerializer.timeoutInterval = time;
+    [[AFHttpAPIClient sharedClient].requestSerializer didChangeValueForKey:@"timeoutInterval"];
 }
 
 /**
