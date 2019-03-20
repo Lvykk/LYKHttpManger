@@ -5,7 +5,7 @@
 //  Created by Lvyk on 2019/3/19.
 //
 
-#import "AFHTTPSessionManager.h"
+#import <AFNetworking/AFNetworking.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -22,7 +22,9 @@ PODS:
   - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
+  - AFNetworking (~> 3.2.1)
   - LYKHttpManger (from `../`)
+  - YYKit
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -35,9 +37,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  LYKHttpManger: 28558e89ab4f34a1acb78f756fe5be2927bb2888
+  LYKHttpManger: b6ad4314a116940f8414c721be4e0b75e4027924
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 5f44a80310c7e3d0b76949067da699a1a1419b39
+PODFILE CHECKSUM: 6939be2d0ec7e73b28646f94177e08291e404d25
 
 COCOAPODS: 1.5.3

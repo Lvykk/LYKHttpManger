@@ -4,6 +4,8 @@ platform :ios, '8.0'
 
 target 'LYKHttpManger_Example' do
   pod 'LYKHttpManger', :path => '../'
+  pod 'AFNetworking', '~> 3.2.1'
+  pod 'YYKit'
 
   target 'LYKHttpManger_Tests' do
     inherit! :search_paths
