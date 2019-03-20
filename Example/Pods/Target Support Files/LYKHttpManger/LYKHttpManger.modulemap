@@ -1,0 +1,6 @@
+framework module LYKHttpManger {
+  umbrella header "LYKHttpManger-umbrella.h"
+
+  export *
+  module * { export * }
+}

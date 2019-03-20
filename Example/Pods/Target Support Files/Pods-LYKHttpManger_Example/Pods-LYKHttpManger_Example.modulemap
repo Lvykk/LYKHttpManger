@@ -1,0 +1,6 @@
+framework module Pods_LYKHttpManger_Example {
+  umbrella header "Pods-LYKHttpManger_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
