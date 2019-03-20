@@ -7,7 +7,6 @@
 
 #import "LYKHttpManger.h"
 #import "LYKHttpBaseModel.h"
-#import <YYKit/YYKit.h>
 
 @implementation LYKHttpManger
 

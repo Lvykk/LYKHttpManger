@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AFHttpAPIClient.h"
+#import <YYKit/YYKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
