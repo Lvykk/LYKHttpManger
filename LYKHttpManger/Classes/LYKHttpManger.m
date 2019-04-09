@@ -44,7 +44,7 @@
 
 + (__kindof NSURLSessionTask *)URL:(NSString*)url ParamsDic:(nullable NSDictionary*)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Headers:(nullable NSDictionary<NSString*,NSString*>*)headers Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
     NSString *urlStr = [url copy];
-    if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
+    if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"]) && HttpToolManger.serviceIP.length>0) {
         urlStr = [HttpToolManger.serviceIP stringByAppendingString:url];
     }
     NSURLSessionTask *task = [[AFHttpAPIClient sharedClient] startRequestWithType:type URL:urlStr Params:params Headers:headers Progress:progress Succeed:^(id resultObj) {
@@ -77,7 +77,7 @@
 
 + (__kindof NSURLSessionTask *)POST:(NSString*)url ParamsDic:(nullable NSDictionary*)params ResultClass:(nullable Class)resultClass Headers:(nullable NSDictionary<NSString*,NSString*>*)headers Body:(BodyBlock)body Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
     NSString *urlStr = [url copy];
-    if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
+    if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"]) && HttpToolManger.serviceIP.length>0) {
         urlStr = [HttpToolManger.serviceIP stringByAppendingString:url];
     }
     NSURLSessionTask *task = [[AFHttpAPIClient sharedClient] startRequestWithURL:urlStr Params:params Headers:headers Body:body Progress:progress Succeed:^(id resultObj) {
