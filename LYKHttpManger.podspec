@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LYKHttpManger'
-  s.version          = '0.1.6'
+  s.version          = '0.1.7'
   s.summary          = '基于AFN二次封装的网络工具类'
 
 # This description is used to generate tags and improve search results.
@@ -40,6 +40,6 @@ TODO: Add long description of the pod here.
   # s.frameworks = 'UIKit', 'MapKit'
     s.frameworks = 'Foundation'
     s.dependency 'AFNetworking', '~> 3.2.1'
-    s.dependency 'YYKit', '~>1.0.9'
+    s.dependency 'YYKit'
 
 end
