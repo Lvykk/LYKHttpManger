@@ -142,6 +142,7 @@ static AFHttpAPIClient *_sharedClient = nil;
 - (__kindof NSURLSessionTask *)startRequestWithType:(NetworkRequestType)type URL:(NSString*)url Params:(id)params Headers:(NSDictionary<NSString*,NSString*>*)headers Progress:(nullable ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
         NSLog(@"域名不是以'http://'或'https://'开头,请检查是否设置了域名");
+        failure([NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
         return nil;
     }
     //添加请求头
@@ -338,6 +339,7 @@ static AFHttpAPIClient *_sharedClient = nil;
 - (__kindof NSURLSessionTask *)POSTWithURL:(NSString*)url Params:(id)params Progress:(ProgressBlock)progress Body:(BodyBlock)body Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
         NSLog(@"域名不是以'http://'或'https://'开头,请检查是否设置了域名");
+        failure([NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
         return nil;
     }
     NSURLSessionTask *task = [self POST:url parameters:params constructingBodyWithBlock:body progress:progress success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
