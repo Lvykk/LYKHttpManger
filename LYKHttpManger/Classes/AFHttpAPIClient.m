@@ -243,7 +243,7 @@ static AFHttpAPIClient *_sharedClient = nil;
     } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
         if (failure && error) {
             failure(error);
-            [self logAddress:URL parameters:nil];
+            [self logAddress:URL parameters:nil error:error];
             return;
         }
         if (success && filePath) {
@@ -271,7 +271,7 @@ static AFHttpAPIClient *_sharedClient = nil;
         if (failure) {
             failure(error);
         }
-        [self logAddress:url parameters:params];
+        [self logAddress:url parameters:params error:error];
     }];
     return task;
 }
@@ -286,7 +286,7 @@ static AFHttpAPIClient *_sharedClient = nil;
         if (failure) {
             failure(error);
         }
-        [self logAddress:url parameters:params];
+        [self logAddress:url parameters:params error:error];
     }];
     return task;
 }
@@ -301,7 +301,7 @@ static AFHttpAPIClient *_sharedClient = nil;
         if (failure) {
             failure(error);
         }
-        [self logAddress:url parameters:params];
+        [self logAddress:url parameters:params error:error];
     }];
     return task;
 }
@@ -316,7 +316,7 @@ static AFHttpAPIClient *_sharedClient = nil;
         if (failure) {
             failure(error);
         }
-        [self logAddress:url parameters:params];
+        [self logAddress:url parameters:params error:error];
     }];
     return task;
 }
@@ -331,7 +331,7 @@ static AFHttpAPIClient *_sharedClient = nil;
         if (failure) {
             failure(error);
         }
-        [self logAddress:url parameters:params];
+        [self logAddress:url parameters:params error:error];
     }];
     return task;
 }
@@ -350,7 +350,7 @@ static AFHttpAPIClient *_sharedClient = nil;
         if (failure) {
             failure(error);
         }
-        [self logAddress:url parameters:params];
+        [self logAddress:url parameters:params error:error];
     }];
     return task;
 }
@@ -363,7 +363,7 @@ static AFHttpAPIClient *_sharedClient = nil;
 }
 
 //error失败打印
--(void)logAddress:(NSString *)url parameters:(NSDictionary *)params{
+-(void)logAddress:(NSString *)url parameters:(NSDictionary *)params error:(NSError*)error {
     NSMutableString *string=[[NSMutableString alloc] initWithString:url];
     [string appendString:@"?"];
     NSEnumerator *enumerator=[params keyEnumerator];
@@ -375,7 +375,7 @@ static AFHttpAPIClient *_sharedClient = nil;
     }
     
     [string deleteCharactersInRange:NSMakeRange(string.length-1, 1)];
-    NSLog(@"请求失败》地址:%@",string);
+    NSLog(@"请求失败》地址:%@ \n\n error:%@",string,error);
 }
 
 @end
