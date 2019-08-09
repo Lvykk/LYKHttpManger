@@ -175,6 +175,10 @@ static AFHttpAPIClient *_sharedClient = nil;
             task =[self POSTWithURL:url Params:params Progress:progress Succeed:succeed Failure:failure];
             break;
             
+        case NetworkRequestPatch:
+            task = [self PATCHWithURL:url Params:params Succeed:succeed Failure:failure];
+            break;
+            
         default:
             break;
     }
@@ -343,6 +347,26 @@ static AFHttpAPIClient *_sharedClient = nil;
         return nil;
     }
     NSURLSessionTask *task = [self POST:url parameters:params constructingBodyWithBlock:body progress:progress success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (succeed) {
+            succeed(responseObject);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+        [self logAddress:url parameters:params error:error];
+    }];
+    return task;
+}
+
+#pragma mark --------------------PATCH请求-----------------------
+- (__kindof NSURLSessionTask*)PATCHWithURL:(NSString*)url Params:(id)params Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
+    if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
+        NSLog(@"域名不是以'http://'或'https://'开头,请检查是否设置了域名");
+        failure([NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
+        return nil;
+    }
+    NSURLSessionTask *task = [self PATCH:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (succeed) {
             succeed(responseObject);
         }

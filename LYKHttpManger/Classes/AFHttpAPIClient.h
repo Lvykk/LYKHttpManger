@@ -32,7 +32,9 @@ typedef NS_ENUM(NSUInteger, NetworkRequestType) {
     /// DELEGATE请求
     NetworkRequestDelete,
     /// POST请求
-    NetworkRequestPost
+    NetworkRequestPost,
+    /// PATCH请求
+    NetworkRequestPatch
 };
 
 /**请求数据传输方式*/
