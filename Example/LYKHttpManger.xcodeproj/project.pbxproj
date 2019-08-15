@@ -321,17 +321,13 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-LYKHttpManger_Example/Pods-LYKHttpManger_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-LYKHttpManger_Example/Pods-LYKHttpManger_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/LYKHttpManger/LYKHttpManger.framework",
 				"${BUILT_PRODUCTS_DIR}/YYKit/YYKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LYKHttpManger.framework",
@@ -339,7 +335,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LYKHttpManger_Example/Pods-LYKHttpManger_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LYKHttpManger_Example/Pods-LYKHttpManger_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DD5D23962AC7991A73334497 /* [CP] Check Pods Manifest.lock */ = {

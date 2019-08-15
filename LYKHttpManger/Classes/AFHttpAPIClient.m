@@ -8,6 +8,7 @@
 #import "AFHttpAPIClient.h"
 
 static AFHttpAPIClient *_sharedClient = nil;
+static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 
 @implementation AFHttpAPIClient
 
@@ -17,9 +18,10 @@ static AFHttpAPIClient *_sharedClient = nil;
     dispatch_once(&onceToken, ^{
         _sharedClient = [super manager];
         //设置contentTypes
-        NSSet <NSString*>* set = [NSSet setWithObjects:@"application/json", @"text/html", @"text/json", @"text/plain", @"text/javascript", @"text/xml", @"image/*", nil];
+        NSSet <NSString*>* set = [NSSet setWithObjects:@"application/json", @"text/html", @"text/json", @"text/plain", @"text/javascript", @"text/xml", @"image/*", @"application/javascript", nil];
         _sharedClient.responseSerializer.acceptableContentTypes = set;
         //设置请求数据为JSON格式传输
+        _sharedClient.responseSerializer = [AFJSONResponseSerializer serializer];
         _sharedClient.requestSerializer = [AFJSONRequestSerializer serializer];
         // 设置超时时间
         [_sharedClient.requestSerializer willChangeValueForKey:@"timeoutInterval"];
@@ -75,18 +77,41 @@ static AFHttpAPIClient *_sharedClient = nil;
 
 /** 设置ContentTypes  */
 + (void)setContentTypes:(NSSet<NSString*>*)contentTypes {
-    [AFHttpAPIClient sharedClient].responseSerializer.acceptableContentTypes = contentTypes;
+    NSMutableSet<NSString*> *newContentTypes = [AFHttpAPIClient sharedClient].responseSerializer.acceptableContentTypes.mutableCopy;
+    [newContentTypes unionSet:contentTypes];
+    [AFHttpAPIClient sharedClient].responseSerializer.acceptableContentTypes = newContentTypes;
 }
 
-/** 请求数据传输方式,默认是JSON传输*/
-+ (void)transferParamsType:(NetworkTransferType)type {
-    if (type == NetworkTransferJSON) {
-        //JSON格式
-        [AFHttpAPIClient sharedClient].requestSerializer = [AFJSONRequestSerializer serializer];
-    } else if (type == NetworkTransferBinary) {
-        //二进制
-        [AFHttpAPIClient sharedClient].requestSerializer = [AFHTTPRequestSerializer serializer];
+///** 请求数据传输方式,默认是JSON传输  */
++ (void)setResponseDataType:(NetworkResponseDataType)responseDataType {
+    switch (responseDataType) {
+        case NetworkResponseData_JSON:
+        {
+            [AFHttpAPIClient sharedClient].responseSerializer = [AFJSONResponseSerializer serializer];
+            [AFHttpAPIClient sharedClient].requestSerializer = [AFJSONRequestSerializer serializer];
+            break;
+        }
+        case NetworkResponseData_Binary:
+        {
+            [AFHttpAPIClient sharedClient].responseSerializer = [AFHTTPResponseSerializer serializer];
+            [AFHttpAPIClient sharedClient].requestSerializer = [AFHTTPRequestSerializer serializer];
+            break;
+        }
+        case NetworkResponseData_XML:
+        {
+            [AFHttpAPIClient sharedClient].responseSerializer = [AFXMLParserResponseSerializer serializer];
+            [AFHttpAPIClient sharedClient].requestSerializer = [AFHTTPRequestSerializer serializer];
+            break;
+        }
+            
+        default:
+            break;
     }
+    _responseDataType = responseDataType;
+}
+
++ (NetworkResponseDataType)responseDataType {
+    return _responseDataType;
 }
 
 /** 设置请求超时的时间   */

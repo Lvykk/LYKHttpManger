@@ -20,27 +20,36 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     [LYKHttpManger sharedBaseHttpTool].serviceIP = @"https://fll.caihong0574.com/client/";
-    [AFHttpAPIClient transferParamsType:NetworkTransferBinary];
+    [AFHttpAPIClient setContentTypes:[NSSet setWithObjects:@"application/javascript", nil]];
+//    NSLog(@"type = %ld",AFHttpAPIClient.responseDataType);
+//    [AFHttpAPIClient transferParamsType:NetworkTransferBinary];
     self.view.backgroundColor = UIColor.redColor;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     NSLog(@"开始请求");
     //common/getAdvert/1
-    [LYKHttpManger URL:@"common/getAdvert/1" ParamsDic:nil RquestType:NetworkRequestGet ResultClass:nil Succeed:^(NSInteger startCode, NSString * _Nonnull message, id  _Nonnull resultObj) {
-        NSLog(@"code = %ld ,message = %@ , data = %@",startCode,message,resultObj);
-        UIAlertController *controllrr = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
-        [controllrr addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [AFHttpAPIClient setTimeoutInterval:10.f];
-        }]];
-        [self presentViewController:controllrr animated:YES completion:nil];
+//    [AFHttpAPIClient setResponseSerializeType:NetworkResponseData_Binary];
+//    [AFHttpAPIClient setRequestSerializeType:NetworkRequestData_Binary];
+    long long nowTime = [NSDate date].timeIntervalSince1970*1000.f;
+    NSString *url = [NSString stringWithFormat:@"https://suggest3.sinajs.cn/suggest/type=&key=%@&name=suggestdata_%@",@"wk",@(nowTime)];
+//    [LYKHttpManger URL:url ParamsDic:nil RquestType:NetworkRequestGet ResultClass:nil Succeed:^(id  _Nonnull resultObj) {
+//        NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+//        NSLog(@"resultObj = %@",[[NSString alloc] initWithData:resultObj encoding:encoding]);
+//    } Failure:^(NSError * _Nonnull error) {
+//        NSLog(@"error = %@",error);
+//    }];
+//    NSLog(@"type = %ld",AFHttpAPIClient.responseDataType);
+    AFHttpAPIClient.responseDataType = NetworkResponseData_Binary;
+    [LYKHttpManger URL:url ParamsDic:nil RquestType:NetworkRequestGet ResultClass:nil Succeed:^(id  _Nonnull resultObj) {
+        NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+        NSLog(@"resultObj = %@",[[NSString alloc] initWithData:resultObj encoding:encoding]);
     } Failure:^(NSError * _Nonnull error) {
-        UIAlertController *controllrr = [UIAlertController alertControllerWithTitle:@"提示" message:error.description preferredStyle:UIAlertControllerStyleAlert];
-        [controllrr addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [AFHttpAPIClient setTimeoutInterval:10.f];
-        }]];
-        [self presentViewController:controllrr animated:YES completion:nil];
+        NSLog(@"error = %@",error);
     }];
+    
+//    NSLog(@"type = %ld",AFHttpAPIClient.responseDataType);
+//    AFHttpAPIClient.responseDataType = NetworkResponseData_JSON;
 }
 
 - (void)didReceiveMemoryWarning

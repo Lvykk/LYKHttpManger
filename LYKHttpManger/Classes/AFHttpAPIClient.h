@@ -38,9 +38,10 @@ typedef NS_ENUM(NSUInteger, NetworkRequestType) {
 };
 
 /**请求数据传输方式*/
-typedef NS_ENUM(NSInteger,NetworkTransferType) {
-    NetworkTransferJSON,
-    NetworkTransferBinary
+typedef NS_ENUM(NSInteger,NetworkResponseDataType) {
+    NetworkResponseData_JSON,
+    NetworkResponseData_Binary,
+    NetworkResponseData_XML
 };
 
 #pragma mark ----------------block---------------------
@@ -70,7 +71,7 @@ typedef void(^NetworkStatus)(NetworkStatusType status);
 /** 设置ContentTypes  */
 + (void)setContentTypes:(NSSet<NSString*>*)contentTypes;
 /** 请求数据传输方式,默认是JSON传输  */
-+ (void)transferParamsType:(NetworkTransferType)type;
+@property (nonatomic,assign,class) NetworkResponseDataType responseDataType;
 /** 设置请求超时的时间,默认是20s   */
 + (void)setTimeoutInterval:(float)time;
 /**

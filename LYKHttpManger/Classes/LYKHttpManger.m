@@ -30,26 +30,26 @@
  succeed     请求成功的回调,注意---Head请求,返回的类型是NSURLSessionDataTask
  failure     请求失败的回调
  */
-+ (__kindof NSURLSessionTask *)URL:(NSString*)url Params:(id)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
++ (__kindof NSURLSessionTask *)URL:(NSString*)url Params:(id)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Succeed:(nullable SucceedBaseBlock)succeed Failure:(nullable FailureBlock)failure {
     return [self URL:url ParamsDic:[params modelToJSONObject] RquestType:type ResultClass:resultClass Succeed:succeed Failure:failure];
 }
 
-+ (__kindof NSURLSessionTask *)URL:(NSString*)url ParamsDic:(nullable NSDictionary*)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
++ (__kindof NSURLSessionTask *)URL:(NSString*)url ParamsDic:(nullable NSDictionary*)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Succeed:(nullable SucceedBaseBlock)succeed Failure:(nullable FailureBlock)failure {
     return [self URL:url ParamsDic:params RquestType:type ResultClass:resultClass Progress:nil Succeed:succeed Failure:failure];
 }
 
-+ (__kindof NSURLSessionTask *)URL:(NSString*)url ParamsDic:(nullable NSDictionary*)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
++ (__kindof NSURLSessionTask *)URL:(NSString*)url ParamsDic:(nullable NSDictionary*)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBaseBlock)succeed Failure:(nullable FailureBlock)failure {
     return [self URL:url ParamsDic:params RquestType:type ResultClass:resultClass Headers:nil Progress:progress Succeed:succeed Failure:failure];
 }
 
-+ (__kindof NSURLSessionTask *)URL:(NSString*)url ParamsDic:(nullable NSDictionary*)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Headers:(nullable NSDictionary<NSString*,NSString*>*)headers Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
++ (__kindof NSURLSessionTask *)URL:(NSString*)url ParamsDic:(nullable NSDictionary*)params RquestType:(NetworkRequestType)type ResultClass:(nullable Class)resultClass Headers:(nullable NSDictionary<NSString*,NSString*>*)headers Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBaseBlock)succeed Failure:(nullable FailureBlock)failure {
     NSString *urlStr = [url copy];
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"]) && HttpToolManger.serviceIP.length>0) {
         urlStr = [HttpToolManger.serviceIP stringByAppendingString:url];
     }
     NSURLSessionTask *task = [[AFHttpAPIClient sharedClient] startRequestWithType:type URL:urlStr Params:params Headers:headers Progress:progress Succeed:^(id resultObj) {
-        if (type==NetworkRequestHead) {//NetworkRequestHead,不做任何处理
-            succeed(0,@"请求方式d是Head",resultObj);
+        if (type==NetworkRequestHead||[resultObj isKindOfClass:NSData.class]) {//NetworkRequestHead,不做任何处理
+            succeed(resultObj);
         } else {
             [self networkSuccessWithResultClass:resultClass JsonData:resultObj Success:succeed];
         }
@@ -67,37 +67,44 @@
  succeed     请求成功的回调,注意---Head请求,返回的类型是NSURLSessionDataTask
  failure     请求失败的回调
  */
-+ (__kindof NSURLSessionTask *)POST:(NSString*)url Params:(id)params ResultClass:(nullable Class)resultClass Body:(BodyBlock)body Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
++ (__kindof NSURLSessionTask *)POST:(NSString*)url Params:(id)params ResultClass:(nullable Class)resultClass Body:(BodyBlock)body Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBaseBlock)succeed Failure:(nullable FailureBlock)failure {
     return [self POST:url ParamsDic:[params modelToJSONObject] ResultClass:resultClass Body:body Progress:progress Succeed:succeed Failure:failure];
 }
 
-+ (__kindof NSURLSessionTask *)POST:(NSString*)url ParamsDic:(nullable NSDictionary*)params ResultClass:(nullable Class)resultClass Body:(BodyBlock)body Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
++ (__kindof NSURLSessionTask *)POST:(NSString*)url ParamsDic:(nullable NSDictionary*)params ResultClass:(nullable Class)resultClass Body:(BodyBlock)body Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBaseBlock)succeed Failure:(nullable FailureBlock)failure {
     return [self POST:url ParamsDic:params ResultClass:resultClass Headers:nil Body:body Progress:progress Succeed:succeed Failure:failure];
 }
 
-+ (__kindof NSURLSessionTask *)POST:(NSString*)url ParamsDic:(nullable NSDictionary*)params ResultClass:(nullable Class)resultClass Headers:(nullable NSDictionary<NSString*,NSString*>*)headers Body:(BodyBlock)body Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBlock)succeed Failure:(nullable FailureBlock)failure {
++ (__kindof NSURLSessionTask *)POST:(NSString*)url ParamsDic:(nullable NSDictionary*)params ResultClass:(nullable Class)resultClass Headers:(nullable NSDictionary<NSString*,NSString*>*)headers Body:(BodyBlock)body Progress:(nullable ProgressBlock)progress Succeed:(nullable SucceedBaseBlock)succeed Failure:(nullable FailureBlock)failure {
     NSString *urlStr = [url copy];
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"]) && HttpToolManger.serviceIP.length>0) {
         urlStr = [HttpToolManger.serviceIP stringByAppendingString:url];
     }
     NSURLSessionTask *task = [[AFHttpAPIClient sharedClient] startRequestWithURL:urlStr Params:params Headers:headers Body:body Progress:progress Succeed:^(id resultObj) {
-        [self networkSuccessWithResultClass:resultClass JsonData:resultObj Success:succeed];
+        if ([resultObj isKindOfClass:NSData.class]) {
+            if (succeed) {
+                succeed(resultObj);
+            }
+        } else {
+            [self networkSuccessWithResultClass:resultClass JsonData:resultObj Success:succeed];
+        }
     } Failure:failure];
     return task;
 }
 
 #pragma mark ----------------公用的模型转换---------------------
-+ (void)networkSuccessWithResultClass:(nullable Class)resultClass JsonData:(id)resultObj Success:(SucceedBlock)success{
++ (void)networkSuccessWithResultClass:(nullable Class)resultClass JsonData:(id)resultObj Success:(SucceedBaseBlock)success{
     if (success) {
         LYKHttpBaseModel *model = [LYKHttpBaseModel modelWithJSON:resultObj];
         if (resultClass) {//传入类型存在,进行模型转换
             if ([model.data isKindOfClass:[NSArray class]]) {//数组转模型数组
-                success([model.code integerValue],model.message,[NSArray modelArrayWithClass:resultClass json:model.data]);
+                model.data = [NSArray modelArrayWithClass:resultClass json:model.data];
             } else {
-                success([model.code integerValue],model.message,[resultClass modelWithJSON:model.data]);
+                model.data = [resultClass modelWithJSON:model.data];
             }
+            success(model);
         } else {
-            success([model.code integerValue],model.message,model.data);
+            success(model);
         }
     }
 }
