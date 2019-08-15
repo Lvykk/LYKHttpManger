@@ -57,7 +57,8 @@ typedef void (^FailureBlock)(NSError *error);
 typedef void(^NetworkStatus)(NetworkStatusType status);
 
 @interface AFHttpAPIClient : AFHTTPSessionManager
-
+/** 请求数据传输方式,默认是JSON传输  */
+@property (nonatomic,assign,class) NetworkResponseDataType responseDataType;
 /**获取单例*/
 + (instancetype)sharedClient;
 /**有网YES, 无网:NO*/
@@ -70,8 +71,6 @@ typedef void(^NetworkStatus)(NetworkStatusType status);
 + (void)networkStatusWithBlock:(NetworkStatus)networkStatus;
 /** 设置ContentTypes  */
 + (void)setContentTypes:(NSSet<NSString*>*)contentTypes;
-/** 请求数据传输方式,默认是JSON传输  */
-@property (nonatomic,assign,class) NetworkResponseDataType responseDataType;
 /** 设置请求超时的时间,默认是20s   */
 + (void)setTimeoutInterval:(float)time;
 /**
