@@ -14,7 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - LYKHttpManger (1.0.1):
+  - LYKHttpManger (1.0.2):
     - AFNetworking (~> 3.2.1)
     - YYKit
   - YYKit (1.0.9):
@@ -37,7 +37,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  LYKHttpManger: 3d432140174d98975054d3d90789ecc9e06225d1
+  LYKHttpManger: cb1f05bedaed98678ac487111bfc49ee69bed8b0
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
 PODFILE CHECKSUM: 6939be2d0ec7e73b28646f94177e08291e404d25
