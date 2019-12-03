@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol LYKHttpMangerProtocol <NSObject>
 @required
 ///模型转换的方法,抽离到协议中,需要自定的只需要继承LYKHttpManger并重写改方法即可
-+ (void)networkSuccessWithResultClass:(nullable Class)resultClass JsonData:(id)resultObj Success:(SucceedBaseBlock)success;
++ (void)networkSuccessWithResultClass:(nullable Class)resultClass JsonData:(id)resultObj dataTask:(nullable NSURLSessionDataTask *)task Success:(SucceedBaseBlock)success;
 @end
 
 @interface LYKHttpManger : NSObject<LYKHttpMangerProtocol>
