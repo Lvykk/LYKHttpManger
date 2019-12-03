@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LYKHttpManger'
-  s.version          = '0.2.1'
+  s.version          = '1.0.1'
   s.summary          = '基于AFN二次封装的网络工具类'
 
 # This description is used to generate tags and improve search results.
