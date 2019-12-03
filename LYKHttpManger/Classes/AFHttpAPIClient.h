@@ -50,9 +50,9 @@ typedef void (^BodyBlock)(id <AFMultipartFormData> formData);
 /**进度的Block*/
 typedef void (^ProgressBlock)(NSProgress *downloadProgress);
 /**最基本的返回数据,Head请求,返回的类型是NSURLSessionDataTask*/
-typedef void (^SucceedBaseBlock)(id resultObj);
+typedef void (^SucceedBaseBlock)(NSURLSessionDataTask * _Nullable task,id _Nullable resultObj);
 /**错误的Block*/
-typedef void (^FailureBlock)(NSError *error);
+typedef void (^FailureBlock)(NSURLSessionDataTask * _Nullable task,NSError *error);
 /// 网络状态的Block
 typedef void(^NetworkStatus)(NetworkStatusType status);
 

@@ -167,7 +167,7 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 - (__kindof NSURLSessionTask *)startRequestWithType:(NetworkRequestType)type URL:(NSString*)url Params:(id)params Headers:(NSDictionary<NSString*,NSString*>*)headers Progress:(nullable ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
         NSLog(@"域名不是以'http://'或'https://'开头,请检查是否设置了域名");
-        failure([NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
+        failure(nil,[NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
         return nil;
     }
     //添加请求头
@@ -271,12 +271,12 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
         return [NSURL fileURLWithPath:filePath];
     } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
         if (failure && error) {
-            failure(error);
+            failure(nil,error);
             [self logAddress:URL parameters:nil error:error];
             return;
         }
         if (success && filePath) {
-            success(filePath.absoluteString);
+            success(nil,filePath.absoluteString);
         }
     }];
     //开始下载
@@ -292,13 +292,9 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
         if (progress) {
             progress(downloadProgress);
         }
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (succeed) {
-            succeed(responseObject);
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
-            failure(error);
+            failure(task,error);
         }
         [self logAddress:url parameters:params error:error];
     }];
@@ -307,13 +303,9 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 
 #pragma mark ----------------Put请求---------------------
 - (__kindof NSURLSessionTask *)PUTWithURL:(NSString*)url Params:(id)params Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
-    NSURLSessionTask *task = [self PUT:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (succeed) {
-            succeed(responseObject);
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    NSURLSessionTask *task = [self PUT:url parameters:params success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
-            failure(error);
+            failure(task,error);
         }
         [self logAddress:url parameters:params error:error];
     }];
@@ -324,11 +316,11 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 - (__kindof NSURLSessionTask *)HEADWithURL:(NSString*)url Params:(id)params Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     NSURLSessionTask *task = [self HEAD:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task) {
         if (succeed) {
-            succeed(task);
+            succeed(task,nil);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
-            failure(error);
+            failure(task,error);
         }
         [self logAddress:url parameters:params error:error];
     }];
@@ -337,14 +329,8 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 
 #pragma mark ----------------Delate请求---------------------
 - (__kindof NSURLSessionTask *)DELETEWithURL:(NSString*)url Params:(id)params Progress:(ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
-    NSURLSessionTask *task = [self DELETE:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (succeed) {
-            succeed(responseObject);
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (failure) {
-            failure(error);
-        }
+    NSURLSessionTask *task = [self DELETE:url parameters:params success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        failure(task,error);
         [self logAddress:url parameters:params error:error];
     }];
     return task;
@@ -352,13 +338,9 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 
 #pragma mark ----------------Post请求---------------------
 - (__kindof NSURLSessionTask *)POSTWithURL:(NSString*)url Params:(id)params Progress:(ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
-    NSURLSessionTask *task = [self POST:url parameters:params progress:progress success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (succeed) {
-            succeed(responseObject);
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    NSURLSessionTask *task = [self POST:url parameters:params progress:progress success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
-            failure(error);
+            failure(task,error);
         }
         [self logAddress:url parameters:params error:error];
     }];
@@ -368,16 +350,12 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 - (__kindof NSURLSessionTask *)POSTWithURL:(NSString*)url Params:(id)params Progress:(ProgressBlock)progress Body:(BodyBlock)body Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
         NSLog(@"域名不是以'http://'或'https://'开头,请检查是否设置了域名");
-        failure([NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
+        failure(nil,[NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
         return nil;
     }
-    NSURLSessionTask *task = [self POST:url parameters:params constructingBodyWithBlock:body progress:progress success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (succeed) {
-            succeed(responseObject);
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    NSURLSessionTask *task = [self POST:url parameters:params constructingBodyWithBlock:body progress:progress success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
-            failure(error);
+            failure(task,error);
         }
         [self logAddress:url parameters:params error:error];
     }];
@@ -388,16 +366,12 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 - (__kindof NSURLSessionTask*)PATCHWithURL:(NSString*)url Params:(id)params Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
         NSLog(@"域名不是以'http://'或'https://'开头,请检查是否设置了域名");
-        failure([NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
+        failure(nil,[NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
         return nil;
     }
-    NSURLSessionTask *task = [self PATCH:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (succeed) {
-            succeed(responseObject);
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    NSURLSessionTask *task = [self PATCH:url parameters:params success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
-            failure(error);
+            failure(task,error);
         }
         [self logAddress:url parameters:params error:error];
     }];

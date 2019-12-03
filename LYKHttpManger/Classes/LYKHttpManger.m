@@ -47,11 +47,11 @@
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"]) && HttpToolManger.serviceIP.length>0) {
         urlStr = [HttpToolManger.serviceIP stringByAppendingString:url];
     }
-    NSURLSessionTask *task = [[AFHttpAPIClient sharedClient] startRequestWithType:type URL:urlStr Params:params Headers:headers Progress:progress Succeed:^(id resultObj) {
+    NSURLSessionTask *task = [[AFHttpAPIClient sharedClient] startRequestWithType:type URL:urlStr Params:params Headers:headers Progress:progress Succeed:^(NSURLSessionDataTask * _Nullable task, id  _Nullable resultObj) {
         if (type==NetworkRequestHead||[resultObj isKindOfClass:NSData.class]) {//NetworkRequestHead,不做任何处理
-            succeed(resultObj);
+            succeed(task,resultObj);
         } else {
-            [self networkSuccessWithResultClass:resultClass JsonData:resultObj Success:succeed];
+            [self networkSuccessWithResultClass:resultClass JsonData:resultObj dataTask:task Success:succeed];
         }
     } Failure:failure];
     return task;
@@ -80,20 +80,20 @@
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"]) && HttpToolManger.serviceIP.length>0) {
         urlStr = [HttpToolManger.serviceIP stringByAppendingString:url];
     }
-    NSURLSessionTask *task = [[AFHttpAPIClient sharedClient] startRequestWithURL:urlStr Params:params Headers:headers Body:body Progress:progress Succeed:^(id resultObj) {
+    NSURLSessionTask *task = [[AFHttpAPIClient sharedClient] startRequestWithURL:urlStr Params:params Headers:headers Body:body Progress:progress Succeed:^(NSURLSessionDataTask * _Nullable task, id  _Nullable resultObj) {
         if ([resultObj isKindOfClass:NSData.class]) {
             if (succeed) {
-                succeed(resultObj);
+                succeed(task,resultObj);
             }
         } else {
-            [self networkSuccessWithResultClass:resultClass JsonData:resultObj Success:succeed];
+            [self networkSuccessWithResultClass:resultClass JsonData:resultObj dataTask:task Success:succeed];
         }
     } Failure:failure];
     return task;
 }
 
 #pragma mark ----------------公用的模型转换---------------------
-+ (void)networkSuccessWithResultClass:(nullable Class)resultClass JsonData:(id)resultObj Success:(SucceedBaseBlock)success{
++ (void)networkSuccessWithResultClass:(nullable Class)resultClass JsonData:(id)resultObj dataTask:(nullable NSURLSessionDataTask *)task Success:(SucceedBaseBlock)success{
     if (success) {
         LYKHttpBaseModel *model = [LYKHttpBaseModel modelWithJSON:resultObj];
         if (resultClass) {//传入类型存在,进行模型转换
@@ -102,9 +102,9 @@
             } else {
                 model.data = [resultClass modelWithJSON:model.data];
             }
-            success(model);
+            success(task,model);
         } else {
-            success(model);
+            success(task,model);
         }
     }
 }

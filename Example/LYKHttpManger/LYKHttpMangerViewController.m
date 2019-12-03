@@ -41,11 +41,13 @@
 //    }];
 //    NSLog(@"type = %ld",AFHttpAPIClient.responseDataType);
     AFHttpAPIClient.responseDataType = NetworkResponseData_Binary;
-    [LYKHttpManger URL:url ParamsDic:nil RquestType:NetworkRequestGet ResultClass:nil Succeed:^(id  _Nonnull resultObj) {
+    [LYKHttpManger URL:url ParamsDic:nil RquestType:NetworkRequestGet ResultClass:nil Succeed:^(NSURLSessionDataTask * _Nullable task, id  _Nullable resultObj) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
         NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
-        NSLog(@"resultObj = %@",[[NSString alloc] initWithData:resultObj encoding:encoding]);
-    } Failure:^(NSError * _Nonnull error) {
-        NSLog(@"error = %@",error);
+        NSLog(@"resultObj = %@  code = %ld",[[NSString alloc] initWithData:resultObj encoding:encoding],response.statusCode);
+    } Failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse*)task.response;
+        NSLog(@"error = %@ code = %ld",error,response.statusCode);
     }];
     
 //    NSLog(@"type = %ld",AFHttpAPIClient.responseDataType);
