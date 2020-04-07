@@ -1,28 +1,28 @@
 PODS:
-  - AFNetworking (3.2.1):
-    - AFNetworking/NSURLSession (= 3.2.1)
-    - AFNetworking/Reachability (= 3.2.1)
-    - AFNetworking/Security (= 3.2.1)
-    - AFNetworking/Serialization (= 3.2.1)
-    - AFNetworking/UIKit (= 3.2.1)
-  - AFNetworking/NSURLSession (3.2.1):
+  - AFNetworking (4.0.0):
+    - AFNetworking/NSURLSession (= 4.0.0)
+    - AFNetworking/Reachability (= 4.0.0)
+    - AFNetworking/Security (= 4.0.0)
+    - AFNetworking/Serialization (= 4.0.0)
+    - AFNetworking/UIKit (= 4.0.0)
+  - AFNetworking/NSURLSession (4.0.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.2.1)
-  - AFNetworking/Security (3.2.1)
-  - AFNetworking/Serialization (3.2.1)
-  - AFNetworking/UIKit (3.2.1):
+  - AFNetworking/Reachability (4.0.0)
+  - AFNetworking/Security (4.0.0)
+  - AFNetworking/Serialization (4.0.0)
+  - AFNetworking/UIKit (4.0.0):
     - AFNetworking/NSURLSession
   - LYKHttpManger (1.0.2):
-    - AFNetworking (~> 3.2.1)
+    - AFNetworking
     - YYKit
   - YYKit (1.0.9):
     - YYKit/no-arc (= 1.0.9)
   - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
-  - AFNetworking (~> 3.2.1)
+  - AFNetworking
   - LYKHttpManger (from `../`)
   - YYKit
 
@@ -36,10 +36,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  LYKHttpManger: cb1f05bedaed98678ac487111bfc49ee69bed8b0
+  AFNetworking: d9fdf484a3c723ec3c558a41cc5754c7e845ee77
+  LYKHttpManger: 9239f69a7d2f9488517b1eded96da253bbb35d4d
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 6939be2d0ec7e73b28646f94177e08291e404d25
+PODFILE CHECKSUM: a901274a7658ec6b640bcb0613e89c12f6149a09
 
 COCOAPODS: 1.8.4

@@ -1,10 +1,10 @@
 use_frameworks!
 
-platform :ios, '8.0'
+platform :ios, '9.0'
 
 target 'LYKHttpManger_Example' do
   pod 'LYKHttpManger', :path => '../'
-  pod 'AFNetworking', '~> 3.2.1'
+  pod 'AFNetworking'
   pod 'YYKit'
 
   target 'LYKHttpManger_Tests' do

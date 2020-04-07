@@ -22,7 +22,7 @@
   "frameworks": "Foundation",
   "dependencies": {
     "AFNetworking": [
-      "~> 3.2.1"
+
     ],
     "YYKit": [
 

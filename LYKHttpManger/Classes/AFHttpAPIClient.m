@@ -171,37 +171,37 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
         return nil;
     }
     //添加请求头
-    [self addHeaders:headers];
+//    [self addHeaders:headers];
     NSURLSessionTask *task = nil;
     //开始请求
     switch (type) {
         case NetworkRequestGet:
             //Get请求
-            task =[self GETWithURL:url Params:params Progress:progress Succeed:succeed Failure:failure];
+            task =[self GETWithURL:url Params:params headers:headers Progress:progress Succeed:succeed Failure:failure];
             break;
             
         case NetworkRequestPut:
             //Put请求
-            task =[self PUTWithURL:url Params:params Succeed:succeed Failure:failure];
+            task =[self PUTWithURL:url Params:params headers:headers Succeed:succeed Failure:failure];
             break;
             
         case NetworkRequestHead:
             //Head请求
-            task =[self HEADWithURL:url Params:params Succeed:succeed Failure:failure];
+            task =[self HEADWithURL:url Params:params headers:headers Succeed:succeed Failure:failure];
             break;
             
         case NetworkRequestDelete:
             //Delete请求
-            task =[self DELETEWithURL:url Params:params Progress:progress Succeed:succeed Failure:failure];
+            task =[self DELETEWithURL:url Params:params headers:headers Progress:progress Succeed:succeed Failure:failure];
             break;
             
         case NetworkRequestPost:
             //Post请求
-            task =[self POSTWithURL:url Params:params Progress:progress Succeed:succeed Failure:failure];
+            task =[self POSTWithURL:url Params:params headers:headers Progress:progress Succeed:succeed Failure:failure];
             break;
             
         case NetworkRequestPatch:
-            task = [self PATCHWithURL:url Params:params Succeed:succeed Failure:failure];
+            task = [self PATCHWithURL:url Params:params headers:headers Succeed:succeed Failure:failure];
             break;
             
         default:
@@ -235,8 +235,8 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
  */
 - (__kindof NSURLSessionTask *)startRequestWithURL:(NSString*)url Params:(id)params Headers:(NSDictionary<NSString*,NSString*>*)headers Body:(BodyBlock)body Progress:(nullable ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     //添加请求头
-    [self addHeaders:headers];
-    return [self POSTWithURL:url Params:params Progress:progress Body:body Succeed:succeed Failure:failure];
+//    [self addHeaders:headers];
+    return [self POSTWithURL:url Params:params headers:headers Progress:progress Body:body Succeed:succeed Failure:failure];
 }
 
 /**
@@ -287,8 +287,8 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 
 
 #pragma mark ----------------Get请求---------------------
-- (__kindof NSURLSessionTask *)GETWithURL:(NSString*)url Params:(id)params Progress:(ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
-    NSURLSessionTask *task = [self GET:url parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
+- (__kindof NSURLSessionTask *)GETWithURL:(NSString*)url Params:(id)params headers:(nullable NSDictionary <NSString *, NSString *> *)headers  Progress:(ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
+    NSURLSessionTask *task = [self GET:url parameters:params headers:headers progress:^(NSProgress * _Nonnull downloadProgress) {
         if (progress) {
             progress(downloadProgress);
         }
@@ -302,8 +302,8 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 }
 
 #pragma mark ----------------Put请求---------------------
-- (__kindof NSURLSessionTask *)PUTWithURL:(NSString*)url Params:(id)params Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
-    NSURLSessionTask *task = [self PUT:url parameters:params success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+- (__kindof NSURLSessionTask *)PUTWithURL:(NSString*)url Params:(id)params headers:(nullable NSDictionary <NSString *, NSString *> *)headers Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
+    NSURLSessionTask *task = [self PUT:url parameters:params headers:headers success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
             failure(task,error);
         }
@@ -313,8 +313,8 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 }
 
 #pragma mark ----------------Header请求---------------------
-- (__kindof NSURLSessionTask *)HEADWithURL:(NSString*)url Params:(id)params Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
-    NSURLSessionTask *task = [self HEAD:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task) {
+- (__kindof NSURLSessionTask *)HEADWithURL:(NSString*)url Params:(id)params headers:(nullable NSDictionary <NSString *, NSString *> *)headers Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
+    NSURLSessionTask *task = [self HEAD:url parameters:params headers:headers success:^(NSURLSessionDataTask * _Nonnull task) {
         if (succeed) {
             succeed(task,nil);
         }
@@ -328,8 +328,8 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 }
 
 #pragma mark ----------------Delate请求---------------------
-- (__kindof NSURLSessionTask *)DELETEWithURL:(NSString*)url Params:(id)params Progress:(ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
-    NSURLSessionTask *task = [self DELETE:url parameters:params success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+- (__kindof NSURLSessionTask *)DELETEWithURL:(NSString*)url Params:(id)params headers:(nullable NSDictionary <NSString *, NSString *> *)headers Progress:(ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
+    NSURLSessionTask *task = [self DELETE:url parameters:params headers:headers success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failure(task,error);
         [self logAddress:url parameters:params error:error];
     }];
@@ -337,8 +337,8 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 }
 
 #pragma mark ----------------Post请求---------------------
-- (__kindof NSURLSessionTask *)POSTWithURL:(NSString*)url Params:(id)params Progress:(ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
-    NSURLSessionTask *task = [self POST:url parameters:params progress:progress success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+- (__kindof NSURLSessionTask *)POSTWithURL:(NSString*)url Params:(id)params headers:(nullable NSDictionary <NSString *, NSString *> *)headers Progress:(ProgressBlock)progress Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
+    NSURLSessionTask *task = [self POST:url parameters:params headers:headers progress:progress success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
             failure(task,error);
         }
@@ -347,13 +347,13 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
     return task;
 }
 
-- (__kindof NSURLSessionTask *)POSTWithURL:(NSString*)url Params:(id)params Progress:(ProgressBlock)progress Body:(BodyBlock)body Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
+- (__kindof NSURLSessionTask *)POSTWithURL:(NSString*)url Params:(id)params headers:(nullable NSDictionary <NSString *, NSString *> *)headers Progress:(ProgressBlock)progress Body:(BodyBlock)body Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
         NSLog(@"域名不是以'http://'或'https://'开头,请检查是否设置了域名");
         failure(nil,[NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
         return nil;
     }
-    NSURLSessionTask *task = [self POST:url parameters:params constructingBodyWithBlock:body progress:progress success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    NSURLSessionTask *task = [self POST:url parameters:params headers:headers constructingBodyWithBlock:body progress:progress success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
             failure(task,error);
         }
@@ -363,13 +363,13 @@ static NetworkResponseDataType _responseDataType = NetworkResponseData_JSON;
 }
 
 #pragma mark --------------------PATCH请求-----------------------
-- (__kindof NSURLSessionTask*)PATCHWithURL:(NSString*)url Params:(id)params Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
+- (__kindof NSURLSessionTask*)PATCHWithURL:(NSString*)url Params:(id)params headers:(nullable NSDictionary <NSString *, NSString *> *)headers Succeed:(SucceedBaseBlock)succeed Failure:(FailureBlock)failure {
     if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"])) {
         NSLog(@"域名不是以'http://'或'https://'开头,请检查是否设置了域名");
         failure(nil,[NSError errorWithDomain:NSURLErrorDomain code:1009 userInfo:@{NSLocalizedDescriptionKey:@"域名错误,请检查域名"}]);
         return nil;
     }
-    NSURLSessionTask *task = [self PATCH:url parameters:params success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    NSURLSessionTask *task = [self PATCH:url parameters:params headers:headers success:succeed failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) {
             failure(task,error);
         }
